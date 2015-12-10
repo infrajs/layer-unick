@@ -12,7 +12,7 @@ class unick
 	public static function init()
 	{
 		global $infra,$infrajs;
-		Event::waitg('oninit', function () {
+		Event::handler('oninit', function () {
 			//session и template
 			global $infra_template_scope;
 			$fn = function ($name, $value) {
@@ -20,7 +20,7 @@ class unick
 			};
 			Sequence::set($infra_template_scope, Sequence::right('infrajs.find'), $fn);
 
-Sequence::set($infra_template_scope, Sequence::right('infrajs.unicks'), unick::$unicks);
+			Sequence::set($infra_template_scope, Sequence::right('infrajs.unicks'), unick::$unicks);
 		});
 	}
 	public static $unicks = array();
@@ -33,10 +33,9 @@ Sequence::set($infra_template_scope, Sequence::right('infrajs.unicks'), unick::$
 	}
 	public static function &find($name, $value)
 	{
-		$layers = Controller::getAllLayers();
 		$right = Sequence::right($name);
 
-		return Controller::run($layers, function &(&$layer) use ($right, $value) {
+		return Controller::run(static::$layers, function &(&$layer) use ($right, $value) {
 			if (Sequence::get($layer, $right) == $value) {
 				return $layer;
 			}
